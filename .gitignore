@@ -1,0 +1,5 @@
+config/local.neon
+nbproject
+temp
+log
+vendor

@@ -1,0 +1,11 @@
+services:
+	- App\Router\RouterFactory::createRouter
+	- App\Forms\NewArticleFormFactory
+	- App\Model\Article
+
+
+search:
+	-	in: %appDir%
+		classes:
+			- *Factory
+			- *Facade

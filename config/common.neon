@@ -1,0 +1,36 @@
+parameters:
+
+
+application:
+	catchExceptions: false
+	errorPresenter: Error:Error
+	mapping:
+		Error: ['App\Presenters', '*', '*Presenter']
+		*: ['App\Modules',  '*', '*Presenter']
+
+
+latte:
+	strictTypes: yes
+
+
+session:
+	expiration: 14 days
+	autoStart: always
+
+
+di:
+	export:
+		parameters: no
+		tags: no
+
+extensions:
+	translation: Contributte\Translation\DI\TranslationExtension
+
+translation:
+	locales:
+		whitelist: [en, cs]
+		default: cs
+		fallback: [en]
+	dirs:
+		- %appDir%/lang
+	returnOriginalMessage: true # to not translate undefined messages, default is true
