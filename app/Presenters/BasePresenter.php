@@ -10,7 +10,7 @@ use Nette;
 class BasePresenter extends Nette\Application\UI\Presenter
 {
     /** @persistent */  
-    public $locale;
+    public string $locale;
     
     public function beforeRender(): void {
         
