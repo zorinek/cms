@@ -1,0 +1,49 @@
+{layout '../../../@layout_frontend.latte'}
+{block title}
+{_ homepage.title}
+{/block}
+{block description}
+{_ homepage.description}
+{/block}
+{block breadcrumb}
+<a n:href=":Frontend:Homepage:default locale => $locale"><i class="fas fa-home"></i></a>
+<span>  >  </span>
+Articles
+<span>  >  </span>
+Overview
+{/block}
+{block content}
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="float-start">All articles</h3>
+					<a n:href=":Article:Article:new" class="btn btn-success float-end">New article</a>
+				</div>
+				<div class="card-body">
+					<table class="table">
+						{foreach $articles as $article}
+							<tr>
+								<td>{$article->art_title}</td>
+								<td>{$article->art_text}</td>
+								<td>{$article->art_date}</td>
+								<td>{$article->art_contributor}</td>
+								<td><a n:href=":Article:Article:detail $article->art_id" class="btn btn-primary btn-sm">Detail</a></td>
+							</tr>
+						{/foreach}
+					</table>
+				</div>
+				<div class="card-footer">
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{/block}
+{block scripts}
+
+
+{/block}

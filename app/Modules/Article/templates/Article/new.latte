@@ -1,0 +1,52 @@
+{layout '../../../@layout_frontend.latte'}
+{block title}
+{_ homepage.title}
+{/block}
+{block description}
+{_ homepage.description}
+{/block}
+{block breadcrumb}
+<a n:href=":Frontend:Homepage:default locale => $locale"><i class="fas fa-home"></i></a>
+<span>  >  </span>
+Articles
+<span>  >  </span>
+New article
+{/block}
+{block content}
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<form n:name="newArticleForm">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="float-start">New article</h3>
+					</div>
+					<div class="card-body">
+						<div class="mb-3">
+							<label n:name="art_title" class="form-label">Title</label>
+							<input type="text" class="form-control" n:name="art_title" >
+						</div>
+						<div class="mb-3">
+							<label n:name="art_text" class="form-label">Text</label>
+							<textarea n:name="art_text" class="form-control" rows="3"></textarea>
+						</div>
+						<div class="mb-3">
+							<label n:name="art_contributor" class="form-label">Contributor</label>
+							<input type="text" class="form-control" n:name="art_contributor" >
+						</div>
+					</div>
+					<div class="card-footer">
+						<button type="submit" n:name="insertNewArticle" class="btn btn-primary float-end">Insert</button>
+					</div>
+				</div>
+
+			</form>
+		</div>
+	</div>
+</div>
+
+{/block}
+{block scripts}
+
+
+{/block}

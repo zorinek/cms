@@ -1,0 +1,58 @@
+{layout '../../../@layout_frontend.latte'}
+{block title}
+{_ homepage.title}
+{/block}
+{block description}
+{_ homepage.description}
+{/block}
+{block breadcrumb}
+<a n:href=":Frontend:Homepage:default locale => $locale"><i class="fas fa-home"></i></a>
+<span>  >  </span>
+Articles
+<span>  >  </span>
+Detail
+<span>  >  </span>
+{$article->art_id}
+{/block}
+{block content}
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="float-start">Detail of article {$article->art_id}</h3>
+				</div>
+				<div class="card-body">
+					<table class="table">
+						<tr>
+							<th>Article id</th>
+							<td>{$article->art_id}</td>
+						</tr>
+						<tr>
+							<th>Title</th>
+							<td>{$article->art_title}</td>
+						</tr>
+						<tr>
+							<th>Text</th>
+							<td>{$article->art_text}</td>
+						</tr>
+						<tr>
+							<th>Date</th>
+							<td>{$article->art_date}</td>
+						</tr>
+						<tr>
+							<th>Contributor</th>
+							<td>{$article->art_contributor}</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{/block}
+{block scripts}
+
+
+{/block}
