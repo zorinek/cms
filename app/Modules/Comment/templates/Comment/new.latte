@@ -1,0 +1,64 @@
+{layout '../../../@layout_frontend.latte'}
+{block title}
+{_ homepage.title}
+{/block}
+{block description}
+{_ homepage.description}
+{/block}
+{block breadcrumb}
+<a n:href=":Frontend:Homepage:default locale => $locale"><i class="fas fa-home"></i></a>
+<span>  >  </span>
+Comments
+<span>  >  </span>
+New comment
+{/block}
+{block content}
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<form n:name="newCommentForm">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="float-start">New comment</h3>
+					</div>
+					<div class="card-body">
+						<div class="mb-3">
+							<label n:name="com_name" class="form-label">Name</label>
+							<input type="text" class="form-control" n:name="com_name" >
+						</div>
+						<div class="mb-3">
+							<label n:name="com_email" class="form-label">E-mail</label>
+							<input type="email" class="form-control" n:name="com_email" >
+						</div>
+						<div class="mb-3">
+							<label n:name="com_text" class="form-label">Text</label>
+							<textarea n:name="com_text" class="form-control" rows="3"></textarea>
+						</div>
+						<div class="form-floating mb-3">
+							<select class="form-select" n:name="art_id">
+
+							</select>
+							<label n:name="art_id">Article</label>
+						</div>
+						<div class="form-floating mb-3">
+							<select class="form-select" n:name="com_parent_id">
+
+							</select>
+							<label n:name="com_parent_id">Parent comment</label>
+						</div>
+					</div>
+					<div class="card-footer">
+						<button type="submit" n:name="insertNewComment" class="btn btn-primary float-end">Insert</button>
+					</div>
+				</div>
+
+			</form>
+		</div>
+	</div>
+</div>
+
+{/block}
+{block scripts}
+
+
+{/block}

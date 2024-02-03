@@ -22,12 +22,20 @@
 		  </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Pricing</a>
+          <div class="dropdown">
+			<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+			  Comments
+			</a>
+
+			<ul class="dropdown-menu">
+			  <li><a class="dropdown-item" n:href=":Comment:Comment:overview">Comments overview</a></li>
+			  <li><a class="dropdown-item" n:href=":Comment:Comment:new">New comment</a></li>
+			</ul>
+		  </div>
         </li>
+
       </ul>
-      <span class="navbar-text">
-        Navbar text with an inline element
-      </span>
+
     </div>
   </div>
 </nav>
