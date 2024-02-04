@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Model;
 
 use Nette;
+use App\Exceptions;
+use App\Model;
 
 /**
  * Comment class
@@ -22,13 +24,21 @@ class Comment {
             COLUMN_COM_DATE = 'com_date',
             COLUMN_ART_ID = 'art_id',
             COLUMN_COM_PARENT_ID = 'com_parent_id';
+	
+	public const
+			LENGTH_COM_NAME = 511,
+			LENGTH_COM_EMAIL = 255;
 
     /** @var Nette\Database\Context */
     private $db;
+	
+    /** @var Model\Article $article */
+    private $article;
 
-    public function __construct(Nette\Database\Context $db) 
+    public function __construct(Nette\Database\Context $db, Model\Article $article) 
 	{
         $this->db = $db;
+		$this->article = $article;
     }
 
     /**
@@ -58,9 +68,9 @@ class Comment {
 	 * Function get one comment by its id
 	 * 
 	 * @param int $com_id
-	 * @return object
+	 * @return object|null
 	 */
-	public function get(int $com_id): object
+	public function get(int $com_id): object|null
 	{
 		$one = $this->db->table(self::TABLE_NAME)->where(self::COLUMN_COM_ID, $com_id)->fetch();
 		return $one;
@@ -71,18 +81,33 @@ class Comment {
 	 * 
 	 * @param string $parameter
 	 * @param object $json_obj
-	 * @return string
+	 * @param int|bool $max_length
+	 * @param int|bool $is_number
+	 * @return string|int
 	 */
-	public function checkParameter($parameter, $json_obj) : string
+	public function checkParameter($parameter, $json_obj, $max_length = false, $is_number = false) : string|int
 	{
-		if (isset($json_obj->{$parameter}))
-		{
-			return  $json_obj->{$parameter};
-		} 
-		else
+		if (!isset($json_obj->{$parameter}))
 		{
 			throw new Exceptions\MandatoryParameterMissingException("Missing parameter " . $parameter);
 		}
+		
+		if(empty($json_obj->{$parameter}) || $json_obj->{$parameter} == "")
+		{
+			throw new Exceptions\EmptyParameterException("Empty parameter " . $parameter);
+		}
+		
+		if($max_length !== false && mb_strlen($json_obj->{$parameter}) > $max_length)
+		{
+			throw new Exceptions\TooLongParameterException("Parameter " . $parameter . " is too long. Max length is " . $max_length . ". Your current length is " . mb_strlen($json_obj->{$parameter}) . ".");
+		}
+		
+		if($is_number !== false && !is_int($json_obj->{$parameter}))
+		{
+			throw new Exceptions\NotNumberParameterException("Parameter " . $parameter . " is not number");
+		}
+		
+		return  $json_obj->{$parameter};
 	}
 
 	/**
@@ -96,13 +121,27 @@ class Comment {
 		try
 		{
 			$vals = [];
-			$vals[self::COLUMN_COM_NAME] = $this->checkParameter(self::COLUMN_COM_NAME, $json_obj);
-			$vals[self::COLUMN_COM_EMAIL] = $this->checkParameter(self::COLUMN_COM_EMAIL, $json_obj);
+			$vals[self::COLUMN_COM_NAME] = $this->checkParameter(self::COLUMN_COM_NAME, $json_obj, self::LENGTH_COM_NAME);
+			$vals[self::COLUMN_COM_EMAIL] = $this->checkParameter(self::COLUMN_COM_EMAIL, $json_obj, self::LENGTH_COM_EMAIL);
 			$vals[self::COLUMN_COM_TEXT] = $this->checkParameter(self::COLUMN_COM_TEXT, $json_obj);
-			$vals[self::COLUMN_ART_ID] = $this->checkParameter(self::COLUMN_ART_ID, $json_obj);
+			
+			$check_article_id = $this->checkParameter(self::COLUMN_ART_ID, $json_obj, false, true);
+			$exists_article = $this->article->get($check_article_id);
+			if(!$exists_article)
+			{
+				throw new Exceptions\ArticleNotExistsException("Article with number " . $check_article_id . " does not exists");
+			}
+			$vals[self::COLUMN_ART_ID] = $check_article_id;
 			
 			$vals[self::COLUMN_COM_DATE] = date("Y-m-d H:i:s");
-			$vals[self::COLUMN_COM_PARENT_ID] = isset($json_obj->{self::COLUMN_COM_PARENT_ID}) ? $json_obj->{self::COLUMN_COM_PARENT_ID} : null;
+			
+			$check_parent_id = $this->checkParameter(self::COLUMN_COM_PARENT_ID, $json_obj, false, true);
+			$exists_parent_comment = $this->get($check_parent_id);
+			if(!$exists_parent_comment)
+			{
+				throw new Exceptions\ParentCommentNotExistsException("Parent comment with number " . $check_parent_id . " does not exists");
+			}
+			$vals[self::COLUMN_COM_PARENT_ID] = $check_parent_id;
 			
 			$this->insert($vals);
 			
@@ -110,7 +149,15 @@ class Comment {
 			$ok["status"] = "ok";
 			return $ok;
 		} 
-		catch (Exceptions\MandatoryParameterMissingException $e)
+		catch 
+			(
+				Exceptions\MandatoryParameterMissingException | 
+				Exceptions\EmptyParameterException | 
+				Exceptions\TooLongParameterException | 
+				Exceptions\NotNumberParameterException | 
+				Exceptions\ArticleNotExistsException | 
+				Exceptions\ParentCommentNotExistsException $e
+			)
 		{
 			\Tracy\Debugger::log($e);
 			$error = [];
