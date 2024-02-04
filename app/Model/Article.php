@@ -62,9 +62,9 @@ class Article
 	 * Function get on article by its id
 	 * 
 	 * @param int $art_id
-	 * @return object
+	 * @return object|null
 	 */
-	public function get(int $art_id): object
+	public function get(int $art_id): object|null
 	{
 		$one = $this->db->table(self::TABLE_NAME)->where(self::COLUMN_ART_ID, $art_id)->fetch();
 		return $one;
