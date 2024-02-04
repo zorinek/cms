@@ -22,6 +22,10 @@ class Article
 			COLUMN_ART_TEXT = 'art_text',
 			COLUMN_ART_DATE = 'art_date',
 			COLUMN_ART_CONTRIBUTOR = 'art_contributor';
+	
+	public const
+			LENGTH_ART_TITLE = 2047,
+			LENGTH_ART_CONTRIBUTOR = 511;
 
 	/** @var Nette\Database\Context */
 	private $db;
@@ -71,18 +75,27 @@ class Article
 	 * 
 	 * @param string $parameter
 	 * @param object $json_obj
+	 * @param int|bool $max_length
 	 * @return string
 	 */
-	public function checkParameter($parameter, $json_obj) : string
+	public function checkParameter($parameter, $json_obj, $max_length = false) : string
 	{
-		if (isset($json_obj->{$parameter}))
-		{
-			return  $json_obj->{$parameter};
-		} 
-		else
+		if (!isset($json_obj->{$parameter}))
 		{
 			throw new Exceptions\MandatoryParameterMissingException("Missing parameter " . $parameter);
 		}
+		
+		if(empty($json_obj->{$parameter}) || $json_obj->{$parameter} == "")
+		{
+			throw new Exceptions\EmptyParameterException("Empty parameter " . $parameter);
+		}
+		
+		if($max_length !== false && mb_strlen($json_obj->{$parameter}) > $max_length)
+		{
+			throw new Exceptions\TooLongParameterException("Parameter " . $parameter . " is too long. Max length is " . $max_length . ". Your current length is " . mb_strlen($json_obj->{$parameter}) . ".");
+		}
+		
+		return  $json_obj->{$parameter};
 	}
 
 	/**
@@ -96,9 +109,9 @@ class Article
 		try
 		{
 			$vals = [];
-			$vals[self::COLUMN_ART_TITLE] = $this->checkParameter(self::COLUMN_ART_TITLE, $json_obj);
+			$vals[self::COLUMN_ART_TITLE] = $this->checkParameter(self::COLUMN_ART_TITLE, $json_obj, self::LENGTH_ART_TITLE);
 			$vals[self::COLUMN_ART_TEXT] = $this->checkParameter(self::COLUMN_ART_TEXT, $json_obj);
-			$vals[self::COLUMN_ART_CONTRIBUTOR] = $this->checkParameter(self::COLUMN_ART_CONTRIBUTOR, $json_obj);
+			$vals[self::COLUMN_ART_CONTRIBUTOR] = $this->checkParameter(self::COLUMN_ART_CONTRIBUTOR, $json_obj, self::LENGTH_ART_CONTRIBUTOR);
 			
 			$vals[self::COLUMN_ART_DATE] = date("Y-m-d H:i:s");
 			
@@ -108,7 +121,7 @@ class Article
 			$ok["status"] = "ok";
 			return $ok;
 		} 
-		catch (Exceptions\MandatoryParameterMissingException $e)
+		catch (Exceptions\MandatoryParameterMissingException | Exceptions\EmptyParameterException | Exceptions\TooLongParameterException $e)
 		{
 			\Tracy\Debugger::log($e);
 			$error = [];

@@ -18,7 +18,7 @@ final class RouterFactory
 		$router->addRoute('[<locale=en cs|en>/]', 'Frontend:Homepage:default');
 
 		$router->addRoute('[<locale=en cs|en>/]articles/new', 'Article:Article:new');
-		$router->addRoute('[<locale=en cs|en>/]articles/<art_id>[/<type>]', 'Article:Article:detail');
+		$router->addRoute('[<locale=en cs|en>/]articles/detail/<art_id>[/<type>]', 'Article:Article:detail');
 		$router->addRoute('[<locale=en cs|en>/]articles[/<type>]', 'Article:Article:overview');
 		
 		$router->addRoute('[<locale=en cs|en>/]comments/new', 'Comment:Comment:new');
