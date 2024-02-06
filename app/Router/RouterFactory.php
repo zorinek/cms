@@ -20,8 +20,11 @@ final class RouterFactory
 		$router->addRoute('[<locale=en cs|en>/]articles/new', 'Article:Article:new');
 		$router->addRoute('[<locale=en cs|en>/]articles/detail/<art_id>[/<type>]', 'Article:Article:detail');
 		$router->addRoute('[<locale=en cs|en>/]articles[/<type>]', 'Article:Article:overview');
-
 		
+		$router->addRoute('[<locale=en cs|en>/]comments/new', 'Comment:Comment:new');
+		$router->addRoute('[<locale=en cs|en>/]comments[/<type>]', 'Comment:Comment:overview');
+		$router->addRoute('[<locale=en cs|en>/]comments/detail/<com_id>[/<type>]', 'Comment:Comment:detail');
+
 		return $router;
 	}
 }

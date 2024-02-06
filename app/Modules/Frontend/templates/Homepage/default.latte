@@ -32,13 +32,29 @@ Homepage
 				{/foreach}
 			</table>
 		</div>
-		<div class="card-footer">
-
-		</div>
 	  </div>
 	</div>
     <div class="col">
-      Column
+      <div class="card">
+		<div class="card-header">
+			<h3 class="float-start">Last comments</h3>
+			<a n:href=":Comment:Comment:new" class="btn btn-success float-end">New comment</a>
+		</div>
+		<div class="card-body">
+			<table class="table">
+				{foreach $comments as $comment}
+					<tr>
+						<td>{$comment->com_name}</td>
+						<td>{$comment->com_email}</td>
+						<td>{$comment->com_text}</td>
+						<td>{$comment->com_date}</td>
+						<td>{$comment->art_id}</td>
+						<td><a n:href=":Comment:Comment:detail $comment->com_id" class="btn btn-primary btn-sm">Detail</a></td>
+					</tr>
+				{/foreach}
+			</table>
+		</div>
+	  </div>
     </div>
   </div>
 </div>

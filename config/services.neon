@@ -1,7 +1,9 @@
 services:
 	- App\Router\RouterFactory::createRouter
 	- App\Forms\NewArticleFormFactory
+	- App\Forms\NewCommentFormFactory
 	- App\Model\Article
+	- App\Model\Comment
 
 
 search:
